@@ -21,19 +21,28 @@ namespace ConsoleUI
         private static void ProductTestJoin()
         {
             ProductManager productManager = new ProductManager(new EfProductDal());
-            foreach (var product in productManager.GetProductDetails())
+            var result = productManager.GetProductDetails();
+            if (result.Success == true)
             {
-                Console.WriteLine(product.ProductName + "/" + product.CategoryName);
+                foreach (var product in result.Data)
+                {
+                    Console.WriteLine(product.ProductName + "/" + product.CategoryName);
+                }
             }
-        }
-        private static void ProductTest()
-        {
-            ProductManager productManager = new ProductManager(new EfProductDal());
-            foreach (var product in productManager.GetAll())
+            else
             {
-                Console.WriteLine(product.ProductName);
+                Console.WriteLine(result.Message);
             }
+            
         }
+        //private static void ProductTest()
+        //{
+        //    ProductManager productManager = new ProductManager(new EfProductDal());
+        //    foreach (var product in productManager.GetAll())
+        //    {
+        //        Console.WriteLine(product.ProductName);
+        //    }
+        //}
         private static void CategoryTest()
         {
             CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
