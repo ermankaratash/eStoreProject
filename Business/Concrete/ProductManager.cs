@@ -1,21 +1,16 @@
 ﻿using Base.Aspects.Autofac.Validation;
-using Base.CrossCuttingConcerns.Validation;
 using Base.Utilities.Business;
 using Base.Utilities.Results;
 using Business.Abstract;
-using Business.CCS;
+using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using DataAccess.Abstract;
-using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 using Entities.DTOs;
-using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -30,6 +25,7 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
+        [SecuredOperation("admin,product.add")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
