@@ -1,3 +1,5 @@
+using Base.DependencyResolvers;
+using Base.Extensions;
 using Base.Utilities.IoC;
 using Base.Utilities.Security.Encryption;
 using Base.Utilities.Security.JWT;
@@ -63,7 +65,7 @@ namespace WebAPI
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
-            ServiceTool.Create(services);
+            services.AddDependencyResolvers(new IBaseModule[] {new BaseModule()});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
