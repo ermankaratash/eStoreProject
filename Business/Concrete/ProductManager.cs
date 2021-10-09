@@ -1,4 +1,7 @@
-﻿using Base.Aspects.Autofac.Validation;
+﻿using Base.Aspects.Autofac.Caching;
+using Base.Aspects.Autofac.Performance;
+using Base.Aspects.Autofac.Transaction;
+using Base.Aspects.Autofac.Validation;
 using Base.Utilities.Business;
 using Base.Utilities.Results;
 using Business.Abstract;
@@ -27,6 +30,7 @@ namespace Business.Concrete
 
         [SecuredOperation("admin,product.add")]
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
             IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName), 
@@ -42,6 +46,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
+        [CacheAspect]
         public IDataResult<List<Product>> GetAll()
         {
             if (DateTime.Now.Hour == 03)
@@ -56,6 +61,8 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryID == id));
         }
 
+        [PerformanceAspect(5)]
+        [CacheAspect]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductID == productId));
@@ -72,6 +79,7 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
             throw new NotImplementedException();
@@ -102,6 +110,12 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CategoryLimitExceded);
             }
             return new SuccessResult();
+        }
+
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Product product)
+        {
+            throw new NotImplementedException();
         }
     }
 }
